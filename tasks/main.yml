@@ -1,0 +1,37 @@
+---
+- name: Check required variables defined
+  assert:
+    that:
+      - pgdeploy_src != ""
+      - pgdeploy_id != ""
+
+- name: Create remote project directory if not exists
+  file:
+    dest: "{{ pgdeploy_dest_proj_dir }}"
+    mode: 0750
+    state: directory
+
+- name: Compose a deploy script
+  template:
+    src: deploy.sh
+    dest: "{{ pgdeploy_dest_proj_dir }}/.deploy.sh"
+    mode: 0755
+
+- name: Synchronize source directory
+  synchronize:
+    src: "{{ pgdeploy_src }}/"
+    dest: "{{ pgdeploy_dest_proj_dir }}"
+    delete: yes
+    use_ssh_args: yes
+    copy_links: yes
+    owner: no
+    perms: no
+    rsync_opts:
+      - "--exclude=.deploy.sh"
+
+- name: Deploy
+  shell: "{{ pgdeploy_dest_proj_dir }}/.deploy.sh"
+  args:
+    chdir: "{{ pgdeploy_dest_proj_dir }}"
+  register: __pgdeploy_deploy
+  changed_when: not __pgdeploy_deploy.stdout_lines or __pgdeploy_deploy.stdout_lines[-1] != 'unchanged'

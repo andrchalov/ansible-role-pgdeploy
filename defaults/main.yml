@@ -1,0 +1,18 @@
+---
+# directory of source sql scripts
+pgdeploy_src: ''
+
+# custom unique identifier, it will be used to generate unique path,
+# by default, will be a part of pgdeploy_src md5 sum
+pgdeploy_id: "{{ pgdeploy_src | hash('md5') | regex_replace('(........).*', '\\1') }}"
+
+pgdeploy_user: postgres
+pgdeploy_host: localhost
+pgdeploy_db: postgres
+pgdeploy_port: 5432
+
+pgdeploy_entrypoint: 'deploy.sql'
+pgdeploy_dest_dir: /srv/pgdeploy
+pgdeploy_dest_proj_dir: "{{pgdeploy_dest_dir}}/{{pgdeploy_db}}/{{pgdeploy_id}}"
+
+pgdeploy_vars: {}
