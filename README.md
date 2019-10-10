@@ -48,12 +48,12 @@ None.
 
 ## Example Playbook
 
-- hosts: database
-  become: yes
-  vars:
-    pgdeploy_src: '../../sql'
-  roles:
-    - ansible-role-pgdeploy
+    - hosts: database
+      become: yes
+      vars:
+        pgdeploy_src: '../../sql'
+      roles:
+        - ansible-role-pgdeploy
 
 ## License
 
