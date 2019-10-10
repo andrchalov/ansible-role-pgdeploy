@@ -4,8 +4,8 @@ Ansible role for deploy PostgreSQL scripts.
 
 ## Requirements
 
-PostgreSQL Client, version > 10
-Rsync
+- PostgreSQL Client, version > 10
+- Rsync
 
 ## Role Variables
 
