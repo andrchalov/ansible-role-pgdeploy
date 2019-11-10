@@ -27,6 +27,7 @@
     content: "{{ item.value }}"
     dest: "{{ pgdeploy_dest_proj_dir }}/{{ pgdeploy_vars_dir }}/{{item.key}}"
   loop: "{{ query('dict', pgdeploy_vars) }}"
+  no_log: true
 
 - name: Synchronize source directory
   synchronize:
