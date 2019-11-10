@@ -17,6 +17,17 @@
     dest: "{{ pgdeploy_dest_proj_dir }}/.deploy.sh"
     mode: 0755
 
+- name: Create vars folder
+  file:
+    dest: "{{ pgdeploy_dest_proj_dir }}/{{ pgdeploy_vars_dir }}"
+    state: directory
+
+- name: Create var files
+  copy:
+    content: "{{ item.value }}"
+    dest: "{{ pgdeploy_dest_proj_dir }}/{{ pgdeploy_vars_dir }}/{{item.key}}"
+  loop: "{{ query('dict', pgdeploy_vars) }}"
+
 - name: Synchronize source directory
   synchronize:
     src: "{{ pgdeploy_src }}/"
@@ -28,6 +39,7 @@
     perms: no
     rsync_opts:
       - "--exclude=.deploy.sh"
+      - "--exclude={{pgdeploy_vars_dir}}"
 
 - name: Deploy
   shell: "{{ pgdeploy_dest_proj_dir }}/.deploy.sh"

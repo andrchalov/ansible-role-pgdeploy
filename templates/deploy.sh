@@ -1,6 +1,15 @@
 #!/bin/bash
-pwd
-{% if pgdeploy_password is defined %}PGPASSWORD="{{ pgdeploy_password }}" {% endif %}
-psql -U {{pgdeploy_user}} -h {{pgdeploy_host}} -d {{ pgdeploy_db }} -p {{ pgdeploy_port }} \
-  -qt \
-  {% for key, value in pgdeploy_vars.items() %} -v {{ key }}={{ value }}{% endfor %} -1f {{ pgdeploy_entrypoint }}
+
+{% if pgdeploy_password is defined %}export PGPASSWORD="{{ pgdeploy_password }}" {% endif %}
+
+echo '
+\set ON_ERROR_STOP
+BEGIN;
+{% for var in pgdeploy_vars %}
+\set {{var}} `cat {{pgdeploy_vars_dir}}/{{var}}`
+{% endfor %}
+\ir {{ pgdeploy_entrypoint }}
+COMMIT;
+' |
+psql -U {{pgdeploy_user}} -h {{pgdeploy_host}} -d {{ pgdeploy_db }} -p {{ pgdeploy_port }} -v ON_ERROR_STOP=1 -qt
+exit

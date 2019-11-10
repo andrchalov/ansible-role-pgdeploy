@@ -1,6 +1,6 @@
 ---
 # directory of source sql scripts
-pgdeploy_src: ''
+# pgdeploy_src: ''
 
 # custom unique identifier, it will be used to generate unique path,
 # by default, will be a part of pgdeploy_src md5 sum
@@ -15,4 +15,7 @@ pgdeploy_entrypoint: 'deploy.sql'
 pgdeploy_dest_dir: /srv/pgdeploy
 pgdeploy_dest_proj_dir: "{{pgdeploy_dest_dir}}/{{pgdeploy_db}}/{{pgdeploy_id}}"
 
+pgdeploy_vars_dir: .vars
 pgdeploy_vars: {}
+pgdeploy_inventory_dir: inventory
+pgdeploy_inventory_files: []
