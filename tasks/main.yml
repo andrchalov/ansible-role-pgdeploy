@@ -1,35 +1,29 @@
 ---
-- name: Check required variables defined
-  assert:
-    that:
-      - pgdeploy_src != ""
-      - pgdeploy_id != ""
-
-- name: Create remote project directory if not exists
+- name: "{{pgdeploy_name+' : '}}create remote project directory if not exists"
   file:
     dest: "{{ pgdeploy_dest_proj_dir }}"
     mode: 0750
     state: directory
 
-- name: Compose a deploy script
+- name: "{{pgdeploy_name+' : '}}compose a deploy script"
   template:
     src: deploy.sh
     dest: "{{ pgdeploy_dest_proj_dir }}/.deploy.sh"
     mode: 0755
 
-- name: Create vars folder
+- name: "{{pgdeploy_name+' : '}}create vars folder"
   file:
     dest: "{{ pgdeploy_dest_proj_dir }}/{{ pgdeploy_vars_dir }}"
     state: directory
 
-- name: Create var files
+- name: "{{pgdeploy_name+' : '}}create var files"
   copy:
     content: "{{ item.value }}"
     dest: "{{ pgdeploy_dest_proj_dir }}/{{ pgdeploy_vars_dir }}/{{item.key}}"
   loop: "{{ query('dict', pgdeploy_vars) }}"
   no_log: true
 
-- name: Synchronize source directory
+- name: "{{pgdeploy_name+' : '}}synchronize source directory"
   synchronize:
     src: "{{ pgdeploy_src }}/"
     dest: "{{ pgdeploy_dest_proj_dir }}"
@@ -42,7 +36,7 @@
       - "--exclude=.deploy.sh"
       - "--exclude={{pgdeploy_vars_dir}}"
 
-- name: Deploy
+- name: "{{pgdeploy_name+' : '}}deploy"
   shell: "{{ pgdeploy_dest_proj_dir }}/.deploy.sh"
   args:
     chdir: "{{ pgdeploy_dest_proj_dir }}"

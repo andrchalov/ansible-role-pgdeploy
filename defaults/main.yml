@@ -5,6 +5,7 @@
 # custom unique identifier, it will be used to generate unique path,
 # by default, will be a part of pgdeploy_src md5 sum
 pgdeploy_id: "{{ pgdeploy_src | hash('md5') | regex_replace('(........).*', '\\1') }}"
+pgdeploy_name: "{{pgdeploy_id}}"
 
 pgdeploy_user: postgres
 pgdeploy_host: localhost
