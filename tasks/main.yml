@@ -2,7 +2,8 @@
 - name: "{{pgdeploy_name+' : '}}create remote project directory if not exists"
   file:
     dest: "{{ pgdeploy_dest_proj_dir }}"
-    mode: 0750
+    mode: 0700
+    owner: "{{ pgdeploy_user }}"
     state: directory
 
 - name: "{{pgdeploy_name+' : '}}compose a deploy script"
@@ -14,6 +15,7 @@
 - name: "{{pgdeploy_name+' : '}}create vars folder"
   file:
     dest: "{{ pgdeploy_dest_proj_dir }}/{{ pgdeploy_vars_dir }}"
+    mode: 0755
     state: directory
 
 - name: "{{pgdeploy_name+' : '}}create var files"
@@ -42,3 +44,4 @@
     chdir: "{{ pgdeploy_dest_proj_dir }}"
   register: __pgdeploy_deploy
   changed_when: not __pgdeploy_deploy.stdout_lines or __pgdeploy_deploy.stdout_lines[-1] != 'unchanged'
+  become_user: "{{ pgdeploy_user }}"
